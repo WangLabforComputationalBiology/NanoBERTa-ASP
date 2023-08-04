@@ -8,14 +8,11 @@ import os
 import glob
 from tqdm import tqdm
 
+random.seed(42)
 
 def random_cut(split_ratio=(0.6, 0.2, 0.2)):
     print(split_ratio)
-    assert sum(split_ratio) == 1.0, "切分比例之和应为1.0"
-    # assert os.path.exists(input_dir), "输入文件夹不存在"
-    # # 创建输出目录
-    # if not os.path.exists(output_dir):
-    #     os.makedirs(output_dir)
+    assert sum(split_ratio) == 1.0, 
     pdb_files_names = glob.glob(os.path.join(input_dir, "*.pdb"))
     pdb_files = [os.path.basename(f) for f in pdb_files_names]
     file_count = len(pdb_files)
@@ -25,10 +22,10 @@ def random_cut(split_ratio=(0.6, 0.2, 0.2)):
     # 切分文件，并将切分后的文件复制到输出目录中
     train_files = pdb_files
     write_parquest(train_files, 'sc.parquet', path=input_dir)
-    print('完成')
+    print('Finish')
 
 
-def write_parquest(pdb_files, parquet_name, path=None):  # 写入parquet
+def write_parquest(pdb_files, parquet_name, path=None):  # write to parquet
     data_dict = {'sequence': [],
                  'paratope_labels': [],
                  'PDB': [],
@@ -60,21 +57,20 @@ def IMGTcmp(file):
     for remark in remarks:
         match = re.match(pattern, remark)
         if match:
-            # 将每个项的名称和值存储到字典中
+            # save to dict
             data = {
                 "H": match.group("hchain"),
                 "L": match.group("lchain") or 'None',
                 "Antigen": match.group("agchain"),
             }
-            # 打印字典
             results.append(data)
         else:
             pass
     return results
 
 
-def analyse_PDB(file, path=None):  # 计算PDB的结合位点
-    # 检查文件名
+def analyse_PDB(file, path=None):  # Calculate the binding site of PDB
+    # check filename
     pdb_name = file[0:4]
     if path:
         file = path+'/'+file
@@ -95,7 +91,7 @@ def analyse_PDB(file, path=None):  # 计算PDB的结合位点
     for t in imgt:
         nanobody_char = t['H']
         antigen_char = t['Antigen']
-        # 获取纳米抗体和抗原的链
+        # get chains
         if antigen_char == 'NONE' or nanobody_char == antigen_char:
             return sequences, label_lists, temp_combined, clist
             pass
@@ -109,16 +105,16 @@ def analyse_PDB(file, path=None):  # 计算PDB的结合位点
             print(t)
             print(f"The current parameters are: {pdb_name}-{antigen_char}-{nanobody_char}")
             exit()
-        # 查找抗体和抗原之间的接触面积
+        # Identify the contact area between antibody and antigen
         ns = Bio.PDB.NeighborSearch(list(antigen.get_atoms()))
         contact_residues = []
         paratope_seq = ''
         sequence = ''
         for residue in nanobody:
-            if Bio.PDB.is_aa(residue.get_resname(), standard=True):  # 判断是否是氨基酸
+            if Bio.PDB.is_aa(residue.get_resname(), standard=True):  # Determine if it is an amino acid
                 sequence += Bio.PDB.Polypeptide.protein_letters_3to1[residue.get_resname()]
                 for atom in residue.get_atoms():
-                    close_atoms = ns.search(atom.coord, 4.5, level='A')  # 定义接触面积的阈值为4.5埃
+                    close_atoms = ns.search(atom.coord, 4.5, level='A')  # Define the contact area threshold as 4.5 angstroms
                     if len(close_atoms) > 0:
                         paratope_seq += Bio.PDB.Polypeptide.protein_letters_3to1[residue.get_resname()]
                         contact_residues.append(residue)
@@ -167,5 +163,4 @@ input_dir = 'all_structures/imgt/ASP'
 
 if __name__ == '__main__':
     random_cut((0.8, 0.1, 0.1))
-    # print(analyse_PDB('6woz.pdb', 'all_structures/imgt'))
     pass
