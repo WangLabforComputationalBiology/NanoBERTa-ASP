@@ -1,3 +1,8 @@
+# ----------------------------------
+# This is a code example for pretraining the model, describing the hyperparameters used for pretraining.
+# ----------------------------------
+
+
 # Some imports
 from transformers import (
     RobertaConfig,
@@ -34,8 +39,8 @@ tokenized_dataset = dataset.map(
         max_length=150,
         return_special_tokens_mask=True,
     ),
-    batched=True,
     num_proc=1,
+    batched=True,
     remove_columns=["text"],
 )
 NanoBERTa_config = {
