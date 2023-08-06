@@ -1,3 +1,6 @@
+# -------------------------------
+# This is a code example for fine-tuning the model, describing the method used for fine-tuning the model.
+# --------------------------------
 from transformers import (
     RobertaTokenizer,
     RobertaForTokenClassification,
@@ -35,16 +38,12 @@ train_df = pd.read_parquet(
 val_df = pd.read_parquet(
     'assets/nanoval.parquet'
 )
-test_df = pd.read_parquet(
-    'assets/nanotest.parquet'
-)
-ab_dataset = DatasetDict({
+fine_tuning_dataset = DatasetDict({
     "train": Dataset.from_pandas(train_df[['sequence','paratope_labels']]),
-    "validation": Dataset.from_pandas(val_df[['sequence','paratope_labels']]),
-    "test": Dataset.from_pandas(test_df[['sequence','paratope_labels']])
+    "validation": Dataset.from_pandas(val_df[['sequence','paratope_labels']])
 })
 paratope_class_label = ClassLabel(2, names=['N','P'])
-ab_dataset_featurised = ab_dataset.map(
+fine_tuning_dataset_featurised = fine_tuning_dataset.map(
     lambda seq, labels: {
         "sequence": seq,
         "paratope_labels": [paratope_class_label.str2int(sample) for sample in labels]
@@ -67,7 +66,7 @@ def preprocess(batch):
 
         n_pads_with_eos = max(1, tokenized_input_length - paratope_label_length - 1)
 
-        labels_padded = [-100] + labels + [-100] * n_pads_with_eos
+        labels_padded = [-255] + labels + [-255] * n_pads_with_eos
 
         assert len(labels_padded) == len(batch['input_ids'][index]), \
             f"Lengths don't align, {len(labels_padded)}, {len(batch['input_ids'][index])}, {len(labels)}"
@@ -82,7 +81,7 @@ def preprocess(batch):
     return batch
 
 
-ab_dataset_tokenized = ab_dataset_featurised.map(
+fine_tuning_dataset_tokenized = fine_tuning_dataset_featurised.map(
     preprocess,
     batched=True,
     batch_size=8,
@@ -101,16 +100,16 @@ def compute_metrics(p):
     predictions = np.argmax(predictions, axis=2)
 
     preds = [
-        [label_list[p] for (p, l) in zip(prediction, label) if l != -100]
+        [label_list[p] for (p, l) in zip(prediction, label) if l != -255]
         for prediction, label in zip(predictions, labels)
     ]
     labs = [
-        [label_list[l] for (p, l) in zip(prediction, label) if l != -100]
+        [label_list[l] for (p, l) in zip(prediction, label) if l != -255]
         for prediction, label in zip(predictions, labels)
     ]
 
     probs = [
-        [prediction_pr[i][pos] for (pr, (pos, l)) in zip(prediction, enumerate(label)) if l != -100]
+        [prediction_pr[i][pos] for (pr, (pos, l)) in zip(prediction, enumerate(label)) if l != -255]
         for i, (prediction, label) in enumerate(zip(predictions, labels))
     ]
 
@@ -176,44 +175,8 @@ trainer = Trainer(
     model,
     args=args,
     tokenizer=tokenizer,
-    train_dataset=ab_dataset_tokenized['train'],
-    eval_dataset=ab_dataset_tokenized['validation'],
+    train_dataset=fine_tuning_dataset_tokenized['train'],
+    eval_dataset=fine_tuning_dataset_tokenized['validation'],
     compute_metrics=compute_metrics
 )
 trainer.train()
-pred = trainer.predict(
-    ab_dataset_tokenized['test']
-)
-a=pred.metrics
-print(a)
-
-metrics_list = history
-
-metric_names = ['precision', 'recall', 'f1', 'auc', 'aupr', 'mcc']
-
-# Create a dictionary to store metric values
-metric_dict = {}
-for metric_name in metric_names:
-    metric_dict[metric_name] = []
-
-# Traverse each dictionary and extract the value of each metric
-for i in range(len(metrics_list)):
-    for metric_name in metric_names:
-        metric_value = metrics_list[i].get(metric_name)
-        if metric_value is not None:
-            metric_dict[metric_name].append(metric_value)
-
-# Draw a Line chart for each indicator
-for metric_name, metric_value in metric_dict.items():
-    plt.plot(metric_value, label=metric_name)
-
-# Set image titles and axis labels
-plt.title('Model Metrics')
-plt.xlabel('Epoch')
-plt.ylabel('Metric Value')
-
-# add legend
-plt.legend()
-
-# Save image as PNG file
-plt.savefig('metrics.png')
