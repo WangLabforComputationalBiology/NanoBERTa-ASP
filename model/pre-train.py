@@ -17,7 +17,7 @@ import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 # Initialise the tokenizer of antibody
 tokenizer = RobertaTokenizer.from_pretrained(
-    "antibody-tokenizer"
+    "tokenizer"
 )
 
 # Initialise the data collator, which is necessary for batching
