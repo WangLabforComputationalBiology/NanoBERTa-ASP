@@ -6,9 +6,9 @@ The NanoBERTa is based on the Roberta architecture.
   ## Download data
     -To download the required data from the respective databases:
       ·Download unpaired heavy chain data specific to human sources from OAS for pretraining.
-      https://opig.stats.ox.ac.uk/webapps/oas/oas_unpaired/
+      *https://opig.stats.ox.ac.uk/webapps/oas/oas_unpaired/
       ·Download PDB data(<3.0Å) from SAbDab for model fine-tuning.
-      https://opig.stats.ox.ac.uk/webapps/sabdab-sabpred/sabdab/search/
+      *https://opig.stats.ox.ac.uk/webapps/sabdab-sabpred/sabdab/search/
   ## Data preprocessing
     -To preprocessing the data，you can:
       ·Pretrain:
