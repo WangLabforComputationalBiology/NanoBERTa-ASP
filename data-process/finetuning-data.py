@@ -10,18 +10,16 @@ from tqdm import tqdm
 
 random.seed(42)
 
-def random_cut(split_ratio=(0.6, 0.2, 0.2)):
-    print(split_ratio)
-    assert sum(split_ratio) == 1.0, 
+def run():
     pdb_files_names = glob.glob(os.path.join(input_dir, "*.pdb"))
     pdb_files = [os.path.basename(f) for f in pdb_files_names]
     file_count = len(pdb_files)
     print(file_count)
     random.shuffle(pdb_files)
-
-    # 切分文件，并将切分后的文件复制到输出目录中
+    
     train_files = pdb_files
-    write_parquest(train_files, 'sc.parquet', path=input_dir)
+    
+    write_parquest(train_files, 'output.parquet', path=input_dir)
     print('Finish')
 
 
@@ -141,7 +139,7 @@ def analyse_PDB(file, path=None):  # Calculate the binding site of PDB
             else:
                 print(paratope_seq[0:145])
                 print(contact_positions, len(contact_positions))
-                label_list_temp = ["N" if c == "-" else "P" for c in paratope_seq[0:145]]
+                label_list_temp = ["N" if c == "-" else "P" for c in paratope_seq[0:145]] # Preliminary shortened sequence
                 a = sequence+paratope_seq
                 if a not in listreturn:
                     listreturn.append(a)
@@ -158,9 +156,9 @@ def analyse_PDB(file, path=None):  # Calculate the binding site of PDB
     return sequences, label_lists, temp_combined, clist
 
 
-input_dir = 'all_structures/imgt/ASP'
+input_dir = 'all_structures/imgt/' # Path containing PDB files
 
 
 if __name__ == '__main__':
-    random_cut((0.8, 0.1, 0.1))
+    run(()
     pass
