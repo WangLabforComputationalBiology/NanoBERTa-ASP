@@ -1,7 +1,7 @@
-# NanoBERTa
-Predicting Nanobody Binding Epitopes Based on a Pretrained RoBERTa-based Model
+# NanoBERTa-ASP
+Predicting Nanobody Binding Epitopes Based on a Pretrained RoBERTa Model
 # Model Description
-The NanoBERTa is based on the Roberta architecture.
+The NanoBERTa-ASP is based on the RoBERTa architecture.
 # Usage
   ## Download data
     -To download the required data from the respective databases:
@@ -22,4 +22,4 @@ The NanoBERTa is based on the Roberta architecture.
       ·Fine-tuning:
          example code:model/finetuning.py.
 # Contact
-For any questions or inquiries, please contact wangxin@sztu.edu.cn
+For any questions or inquiries, please contact Shangru Li (1372981079@qq.com) and wangxin@sztu.edu.cn
