@@ -1,5 +1,5 @@
 # ----------------------------------
-# This is a code example for pretraining the model, describing the hyperparameters used for pretraining.
+# Pre-training by MLM
 # ----------------------------------
 
 
