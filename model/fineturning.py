@@ -1,5 +1,5 @@
 # -------------------------------
-# This is a code example for fine-tuning the model, describing the method used for fine-tuning the model.
+# fine-tuning
 # --------------------------------
 from transformers import (
     RobertaTokenizer,
