@@ -21,5 +21,6 @@ The NanoBERTa-ASP is based on the RoBERTa architecture.
          example code:model/pre-train.py.
       ·Fine-tuning:
          example code:model/finetuning.py.
+         The dataset is provided in folder NanoBERTa/assets
 # Contact
 For any questions or inquiries, please contact Shangru Li (1372981079@qq.com) and wangxin@sztu.edu.cn
