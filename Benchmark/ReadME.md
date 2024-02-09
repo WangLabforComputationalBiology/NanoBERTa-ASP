@@ -1,6 +1,6 @@
 # Benchmark
 
-This text will show you how to use other  BERT based model
+This readme is about how to use NanoBERTa and other BERT based models to do benchmark.
 
 ```
 
