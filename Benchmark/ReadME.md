@@ -2,9 +2,10 @@
 
 This readme is about how to use NanoBERTa and other BERT based models to do benchmark.
 
+## NanoBERTa-ASP
+
 ```
 
-Code reference source: https://github.com/alchemab/antiberta/blob/master/paratope-prediction.ipynb
 
 from transformers import (
     RobertaTokenizer,
