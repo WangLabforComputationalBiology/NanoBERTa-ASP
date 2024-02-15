@@ -222,7 +222,9 @@ fine_tuning_dataset_featurised = fine_tuning_dataset.map(
 
 ## Paragraph
 
-Paragraph model was downloaded from https://github.com/oxpig/Paragraph . As Paragraph need the input with the coordinate information as PDB files, after this criterion, only 248 PDB files were found with sequence information. (https://github.com/WangLabforComputationalBiology/NanoBERTa-ASP/blob/main/assets/nanotest.csv ) 
+Paragraph model was downloaded from https://github.com/oxpig/Paragraph . To do benchmark, you only need to run this Paragraph program according to the readme file at https://github.com/oxpig/Paragraph.
+
+As Paragraph need the input with the coordinate information as PDB files, after this criterion, only 248 PDB files were found with sequence information. (https://github.com/WangLabforComputationalBiology/NanoBERTa-ASP/blob/main/assets/nanotest.csv ) 
 
 ## Paraperd
 
